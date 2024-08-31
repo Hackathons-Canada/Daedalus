@@ -8,9 +8,6 @@ import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 
 import * as schema from "./schema";
 
-// // Load the environment variables from the .env file
-// process.loadEnvFile()
-
 const sqlite = new Database("./lib/db/sqlite.db");
 export const db: BetterSQLite3Database<typeof schema> = drizzle(sqlite, {
   // to use query builders like findMany()

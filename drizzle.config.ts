@@ -8,5 +8,4 @@ export default defineConfig({
     url: "./lib/db/sqlite.db",
   },
   verbose: true,
-  // generateTypes: true,
 });

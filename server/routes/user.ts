@@ -4,12 +4,7 @@ import { getUserById } from "@/lib/db/queries/user";
 
 export const app = new Hono();
 
-// Routes for /api/v/<route>
-
-// // /api/user
-// app.get("/", (c) => {
-//   return c.text("Hello from application route!");
-// });
+// Routes for /api/user/<route>
 
 // /api/user/:id
 app.get("/:id", async (c) => {
