@@ -1,6 +1,6 @@
 // Reserved file for application queries that will often be used
 
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import { HackerApplicationSubmissionSchema } from "@/lib/validations/application";
 
@@ -36,20 +36,19 @@ export const createOrUpdateApplication = async (
 ) => {
   // TODO: Proper error handling
   try {
-    // TODO better way of handling?
-    if (data.createdAt) {
-      data.createdAt = new Date(data.createdAt);
-    }
-    if (data.updatedAt) {
-      data.updatedAt = new Date(data.updatedAt);
-    }
-
     const [application] = await db
       .insert(hackerApplications)
-      .values(data)
+      .values({
+        ...data,
+        createdAt: new Date(),
+      })
       .onConflictDoUpdate({
         target: [hackerApplications.userId],
-        set: data,
+        set: {
+          ...data,
+          createdAt: sql.raw(`excluded.${hackerApplications.createdAt.name}`),
+          updatedAt: new Date(),
+        },
       })
       .returning();
     return { success: true, data: application };
