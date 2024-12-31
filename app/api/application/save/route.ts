@@ -51,12 +51,6 @@ export async function POST(
         // error: validationResult.error.errors,
       });
     }
-
-    // TODO: data validation
-    // TODO: authentication with user ID
-    // CHECK IF ALREADY SUBMITTED
-
-    // TODO update queries
     const updatedApplication = await createOrUpdateApplication(body);
     if (!updatedApplication.success) {
       return NextResponse.json({

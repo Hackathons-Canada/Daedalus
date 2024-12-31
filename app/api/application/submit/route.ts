@@ -40,7 +40,7 @@ export async function POST(
       });
     }
 
-    // TODO ??
+    // TODO correct role checking?
     if (currentUser.role !== "unassigned") {
       return NextResponse.json({
         success: false,

@@ -52,7 +52,7 @@ export const HackerApplicationDraftSchema = z
 
 // TODO could use zod-drizzle
 // TODO: what should be optional and what shouldn't
-// TODO custom error messages???
+// TODO custom error messages?
 export const HackerApplicationSubmissionSchema = z
   .object({
     userId: z.string().trim(),

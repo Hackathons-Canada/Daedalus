@@ -28,13 +28,9 @@ export const getHackerApplicationByUserId = async (userId: string) => {
   }
 };
 
-// TODO ENSURE USER USES THEIR OWN ID LOGGED IN WITH
-
-// TODO should we include the detailed errors in response
 export const createOrUpdateApplication = async (
   data: HackerApplicationsInsertData,
 ) => {
-  // TODO: Proper error handling
   try {
     const [application] = await db
       .insert(hackerApplications)
