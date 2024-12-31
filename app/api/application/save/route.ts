@@ -59,20 +59,19 @@ export async function POST(
     // TODO update queries
     const updatedApplication = await createOrUpdateApplication(body);
     if (!updatedApplication.success) {
-      console.log("Failed to save application: ", updatedApplication.errors);
       return NextResponse.json({
         success: false,
         message: "Failed to save application. Please try again.",
       });
     }
 
+    // TODO return data?
     return NextResponse.json({
       success: true,
       message: "Application saved successfully",
-      data: updatedApplication,
+      //   data: updatedApplication.data,
     });
   } catch (error) {
-    console.error("Error saving application:", error);
     return NextResponse.json({
       success: false,
       message: "Failed to save application. Please try again.",

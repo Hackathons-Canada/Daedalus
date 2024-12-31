@@ -50,17 +50,27 @@ export async function POST(
     }
 
     const application = await getHackerApplicationByUserId(userId);
-    if (!application || application.submissionStatus !== "draft") {
+    if (!application) {
       return NextResponse.json({
         success: false,
-        message: "Application must be saved and not yet submitted to submit",
+        message: "Application must have been started and saved to submit",
       });
     }
 
-    const updatedApplication = await submitApplication(userId);
+    if (application.submissionStatus !== "draft") {
+      return NextResponse.json({
+        success: false,
+        message: "Application has already been submitted",
+      });
+    }
+
+    const updatedApplication = await submitApplication(application);
 
     if (!updatedApplication.success) {
-      console.log("Failed to submit application: ", updatedApplication.errors);
+      console.error(
+        "Error submitting application: ",
+        updatedApplication.errors,
+      );
       return NextResponse.json({
         success: false,
         message: "Failed to submit application. Please try again.",
