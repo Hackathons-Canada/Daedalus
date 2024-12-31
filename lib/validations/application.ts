@@ -47,8 +47,6 @@ export const HackerApplicationDraftSchema = z
     mlhCheckbox1: z.boolean().optional(),
     mlhCheckbox2: z.boolean().optional(),
     mlhCheckbox3: z.boolean().optional(),
-    createdAt: z.number(),
-    updatedAt: z.number().optional(),
   })
   .strict();
 
@@ -82,7 +80,7 @@ export const HackerApplicationSubmissionSchema = z
     mlhCheckbox2: z.boolean(),
     mlhCheckbox3: z.boolean(),
     createdAt: z.date(),
-    updatedAt: z.date().optional(),
+    updatedAt: z.date(),
     submissionStatus: z.enum(["draft", "submitted"]).default("draft"),
     id: z.string().trim(),
   })
