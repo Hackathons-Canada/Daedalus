@@ -161,6 +161,8 @@ export const hackerApplications = sqliteTable(
     updatedAt: integer("updatedAt", { mode: "timestamp_ms" })
       .notNull()
       .default(sql`(CURRENT_TIMESTAMP)`),
+    internalResult: text("internalResult").default("pending"),
+    internalNotes: text("internalNotes"),
   },
   (table) => ({
     userIdIdx: index("hackerApplication_userId_idx").on(table.userId),
@@ -168,8 +170,8 @@ export const hackerApplications = sqliteTable(
   }),
 );
 
-export type HackerApplicationInsertData =
+export type HackerApplicationsInsertData =
   typeof hackerApplications.$inferInsert;
 
-export type HackerApplicationSelectData =
+export type HackerApplicationsSelectData =
   typeof hackerApplications.$inferSelect;

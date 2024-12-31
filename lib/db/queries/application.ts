@@ -6,9 +6,9 @@ import { HackerApplicationSubmissionSchema } from "@/lib/validations/application
 
 import { db } from "..";
 import {
-  HackerApplicationInsertData,
   hackerApplications,
-  HackerApplicationSelectData,
+  HackerApplicationsInsertData,
+  HackerApplicationsSelectData,
 } from "../schema";
 import { updateUserHackerApplicationStatus } from "./user";
 
@@ -32,7 +32,7 @@ export const getHackerApplicationByUserId = async (userId: string) => {
 
 // TODO should we include the detailed errors in response
 export const createOrUpdateApplication = async (
-  data: HackerApplicationInsertData,
+  data: HackerApplicationsInsertData,
 ) => {
   // TODO: Proper error handling
   try {
@@ -58,7 +58,7 @@ export const createOrUpdateApplication = async (
 };
 
 export const submitApplication = async (
-  application: HackerApplicationSelectData,
+  application: HackerApplicationsSelectData,
 ) => {
   try {
     const result = HackerApplicationSubmissionSchema.safeParse(application);
