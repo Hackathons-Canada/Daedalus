@@ -170,3 +170,6 @@ export const hackerApplications = sqliteTable(
 
 export type HackerApplicationInsertData =
   typeof hackerApplications.$inferInsert;
+
+export type HackerApplicationSelectData =
+  typeof hackerApplications.$inferSelect;

@@ -5,7 +5,11 @@ import { eq } from "drizzle-orm";
 import { HackerApplicationSubmissionSchema } from "@/lib/validations/application";
 
 import { db } from "..";
-import { HackerApplicationInsertData, hackerApplications } from "../schema";
+import {
+  HackerApplicationInsertData,
+  hackerApplications,
+  HackerApplicationSelectData,
+} from "../schema";
 import { updateUserHackerApplicationStatus } from "./user";
 
 export const getHackerApplicationByUserId = async (userId: string) => {
@@ -54,25 +58,22 @@ export const createOrUpdateApplication = async (
   }
 };
 
-export const submitApplication = async (userId: string) => {
+export const submitApplication = async (
+  application: HackerApplicationSelectData,
+) => {
   try {
-    const application = await getHackerApplicationByUserId(userId);
-    if (!application) {
-      return { success: false, errors: ["Application not found"] };
-    }
     const result = HackerApplicationSubmissionSchema.safeParse(application);
     if (!result.success) {
       return { success: false, errors: result.error.errors };
     }
-    // const user = await getUserById(userId);
 
-    // TODO VALIDATE THAT APPLICATION HAS PROPER FIELDS WITH SCHEMA
+    const { userId } = application;
+
     const updatedUser = await updateUserHackerApplicationStatus(
       userId,
       "pending",
     );
 
-    // set the submissionStatus to submitted
     const updatedApplication = await db
       .update(hackerApplications)
       .set({

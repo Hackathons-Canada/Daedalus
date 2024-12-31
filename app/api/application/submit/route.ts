@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/auth";
 
 import { ApiResponse } from "@/types/api";
-import { submitApplication } from "@/lib/db/queries/application";
+import {
+  getHackerApplicationByUserId,
+  submitApplication,
+} from "@/lib/db/queries/application";
 
 // TODO figure out how / when submit will be called
 // e.g. ensure /save is called before /submit
@@ -37,28 +40,23 @@ export async function POST(
       });
     }
 
+    // TODO ??
     if (currentUser.role !== "unassigned") {
       return NextResponse.json({
         success: false,
         message:
-          "You must not have submitted or been accepted to submit an application",
+          "You must not have received a decision to submit an application",
       });
     }
 
-    // const validationResult = HackerApplicationDraftSchema.safeParse(body);
-    // if (!validationResult.success) {
-    //     return NextResponse.json({
-    //         success: false,
-    //         message: "Invalid application data",
-    //         // error: validationResult.error.errors,
-    //     });
-    // }
+    const application = await getHackerApplicationByUserId(userId);
+    if (!application || application.submissionStatus !== "draft") {
+      return NextResponse.json({
+        success: false,
+        message: "Application must be saved and not yet submitted to submit",
+      });
+    }
 
-    // TODO: data validation
-    // TODO: authentication with user ID
-    // CHECK IF ALREADY SUBMITTED
-
-    // TODO update queries
     const updatedApplication = await submitApplication(userId);
 
     if (!updatedApplication.success) {
