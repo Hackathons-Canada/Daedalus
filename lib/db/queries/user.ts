@@ -28,3 +28,20 @@ export const getUserByEmail = async (email: string) => {
     return null;
   }
 };
+
+export const updateUserHackerApplicationStatus = async (
+  userId: string,
+  status: ApplicationStatus,
+) => {
+  try {
+    const [user] = await db
+      .update(users)
+      .set({ applicationStatus: status })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  } catch (error) {
+    console.error("Error updating user hacker application status: ", error);
+    return null;
+  }
+};

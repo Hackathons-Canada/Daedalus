@@ -24,6 +24,8 @@ type UserRole =
   | "volunteer"
   | "judge";
 
+type SubmissionStatus = "draft" | "submitted";
+
 type HackerApplication = {
   id: string;
   userId: string;
@@ -40,7 +42,7 @@ type HackerApplication = {
   graduationYear?: number;
   gender?: string;
   race?: string;
-  submissionStatus: "draft" | "submitted";
+  submissionStatus: SubmissionStatus;
   createdAt?: number;
   updatedAt?: number;
 };

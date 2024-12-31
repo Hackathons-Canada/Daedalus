@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  index,
   integer,
   primaryKey,
   sqliteTable,
@@ -20,10 +21,10 @@ export const users = sqliteTable("user", {
   rsvpAt: integer("rsvpAt", { mode: "timestamp_ms" }),
   createdAt: integer("createdAt", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CURRENT_TIMESTAMP)`),
   updatedAt: integer("updatedAt", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export const passwordResetTokens = sqliteTable("passwordResetToken", {
@@ -33,7 +34,7 @@ export const passwordResetTokens = sqliteTable("passwordResetToken", {
   token: text("token").unique(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CURRENT_TIMESTAMP)`),
   userId: text("userId")
     .notNull()
     .references(() => users.id),
@@ -117,34 +118,55 @@ export const emailVerificationTokens = sqliteTable("emailVerificationToken", {
   expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
   createdAt: integer("createdAt", { mode: "timestamp_ms" })
     .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
+    .default(sql`(CURRENT_TIMESTAMP)`),
 });
 
-export const hackerApplications = sqliteTable("hackerApplication", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  firstName: text("firstName"),
-  lastName: text("lastName"),
-  age: integer("age"),
-  email: text("email"),
-  github: text("github"),
-  linkedin: text("linkedin"),
-  personalWebsite: text("personalWebsite"),
-  resumeUrl: text("resume"),
-  school: text("university"),
-  major: text("major"),
-  graduationYear: integer("graduationYear"),
-  gender: text("gender"),
-  race: text("race"),
-  submissionStatus: text("submissionStatus").notNull().default("draft"),
-  createdAt: integer("createdAt", { mode: "timestamp_ms" })
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-  updatedAt: integer("updatedAt", { mode: "timestamp_ms" })
-    .notNull()
-    .default(sql`CURRENT_TIMESTAMP`),
-});
+export const hackerApplications = sqliteTable(
+  "hackerApplication",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("userId")
+      .unique()
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    firstName: text("firstName"),
+    lastName: text("lastName"),
+    age: integer("age"),
+    pronouns: text("pronouns"),
+    email: text("email"),
+    github: text("github"),
+    linkedin: text("linkedin"),
+    personalWebsite: text("personalWebsite"),
+    resumeUrl: text("resume"),
+    school: text("university"),
+    major: text("major"),
+    graduationYear: integer("graduationYear"),
+    gender: text("gender"),
+    race: text("race"),
+    country: text("country"),
+    shortAnswer1: text("shortAnswer1"),
+    shortAnswer2: text("shortAnswer2"),
+    technicalInterest1: text("technicalInterest1"),
+    technicalInterest2: text("technicalInterest2"),
+    technicalInterest3: text("technicalInterest3"),
+    mlhCheckbox1: integer("mlhCheckbox1", { mode: "boolean" }),
+    mlhCheckbox2: integer("mlhCheckbox2", { mode: "boolean" }),
+    mlhCheckbox3: integer("mlhCheckbox3", { mode: "boolean" }),
+    submissionStatus: text("submissionStatus").notNull().default("draft"),
+    createdAt: integer("createdAt", { mode: "timestamp_ms" })
+      .notNull()
+      .default(sql`(CURRENT_TIMESTAMP)`),
+    updatedAt: integer("updatedAt", { mode: "timestamp_ms" })
+      .notNull()
+      .default(sql`(CURRENT_TIMESTAMP)`),
+  },
+  (table) => ({
+    userIdIdx: index("hackerApplication_userId_idx").on(table.userId),
+    emailIdx: index("hackerApplication_email_idx").on(table.email),
+  }),
+);
+
+export type HackerApplicationInsertData =
+  typeof hackerApplications.$inferInsert;
