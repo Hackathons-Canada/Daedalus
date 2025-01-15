@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { blob, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import type { AdapterAccountType } from "next-auth/adapters";
 
 export const users = sqliteTable("user", {
@@ -139,3 +139,18 @@ export type HackerApplicationsInsertData =
 
 export type HackerApplicationsSelectData =
   typeof hackerApplications.$inferSelect;
+
+export const userActionLog = sqliteTable("user_action_log", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  userId: text("userId")
+    .unique()
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  actionType: text("action_type").notNull(), // Type of action (e.g., 'SEARCH', 'CLICK', 'LOGIN')
+  actionDetails: blob("action_details", { mode: "json" }), // e.g. { searchQuery: 'foo', search_id: 1234 }
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: integer("createdAt", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`),
+});
