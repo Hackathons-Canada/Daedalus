@@ -72,6 +72,36 @@ export async function POST(
       submissionStatus: "draft",
     };
 
+    // Check that the deadline has not passed
+    const url = new URL(req.url);
+    const response = await fetch(`${url.origin}/api/application/deadline`, {
+      next: { revalidate: 5 * 60 }, // Cache for 5m
+    });
+    if (!response.ok) {
+      return NextResponse.json({
+        success: false,
+        message: "Failed to fetch application deadline",
+      });
+    }
+
+    const {
+      data: { deadline },
+    } = await response.json();
+
+    if (!deadline) {
+      return NextResponse.json({
+        success: false,
+        message: "Failed to fetch application deadline",
+      });
+    }
+
+    if (new Date() > new Date(deadline)) {
+      return NextResponse.json({
+        success: false,
+        message: "The deadline to save your application has passed",
+      });
+    }
+
     const updatedApplication = await createOrUpdateApplication(applicationData);
     if (!updatedApplication.success) {
       return NextResponse.json({
